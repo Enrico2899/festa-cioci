@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Festa Cioci 🇯🇵 — Checklist</title>
+<style>
+:root {
+  --red: #C0392B; --red-light: #fdf2f1;
+  --dark: #1A1A2E;
+  --gold-light: #fdf8ec;
+  --bg: #f7f7f5; --surface: #fff;
+  --border: #e5e5e0;
+  --text: #1a1a1a; --text-muted: #888; --text-faint: #bbb;
+  --green: #2d8a4e;
+  --blue: #185fa5; --blue-bg: #eaf1fb;
+  --orange: #b85c0a; --orange-bg: #fef3e8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.hero{background:var(--dark);color:white;padding:1.5rem 1.5rem 1.25rem;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:180px;height:180px;border-radius:50%;background:var(--red);opacity:0.2;}
+.hero-flag{font-size:2rem;position:relative;}
+.hero h1{font-size:1.4rem;font-weight:600;position:relative;margin-top:0.25rem;}
+.hero p{font-size:0.8rem;color:rgba(255,255,255,0.55);margin-top:0.25rem;position:relative;}
+.admin-toggle{position:absolute;top:0;right:0;background:rgba(255,255,255,0.1);border:0 solid transparent;border-bottom-left-radius:10px;color:rgba(255,255,255,0.8);padding:0.75rem 1.1rem;font-size:0.82rem;cursor:pointer;min-width:44px;min-height:44px;}
+.admin-toggle.active{background:var(--red);color:white;}
+.progress-section{background:var(--surface);border-bottom:1px solid var(--border);padding:0.9rem 1.25rem;}
+.progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
+.progress-label{font-size:0.78rem;color:var(--text-muted);font-weight:500;}
+.progress-count{font-size:0.85rem;font-weight:600;}
+.bar{height:5px;background:#eee;border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;background:var(--red);border-radius:3px;transition:width 0.4s;}
+.stats-row{display:flex;gap:0.4rem;margin-top:0.65rem;}
+.stat-pill{flex:1;text-align:center;padding:0.45rem 0.2rem;border-radius:8px;background:var(--bg);font-size:0.68rem;color:var(--text-muted);font-weight:500;}
+.stat-pill strong{display:block;font-size:1rem;color:var(--text);margin-bottom:1px;}
+.share-bar{background:var(--gold-light);border-bottom:1px solid #f0dfa0;padding:0.65rem 1.25rem;display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;}
+.share-label{font-size:0.78rem;color:var(--orange);font-weight:500;flex:1;min-width:100px;}
+.share-actions{display:flex;gap:0.4rem;}
+.btn{padding:0.4rem 0.85rem;border-radius:6px;font-size:0.78rem;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);display:inline-flex;align-items:center;gap:4px;text-decoration:none;transition:opacity 0.15s;}
+.btn:hover{opacity:0.8;}
+.btn.green{background:#25d366;border-color:#25d366;color:white;}
+.btn.red{background:var(--red);border-color:var(--red);color:white;}
+.btn.small{padding:0.25rem 0.6rem;font-size:0.72rem;}
+.sync-status{text-align:center;padding:0.35rem 1rem;font-size:0.72rem;color:var(--text-muted);background:var(--bg);border-bottom:1px solid var(--border);min-height:26px;}
+.filters{padding:0.6rem 1rem;display:flex;gap:0.35rem;overflow-x:auto;background:var(--surface);border-bottom:1px solid var(--border);scrollbar-width:none;}
+.filters::-webkit-scrollbar{display:none;}
+.filter-btn{padding:0.3rem 0.75rem;border-radius:99px;font-size:0.75rem;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-muted);white-space:nowrap;transition:all 0.15s;}
+.filter-btn.active{background:var(--dark);color:white;border-color:var(--dark);}
+main{padding:0.85rem 0.85rem 4rem;max-width:680px;margin:0 auto;}
+.admin-bar{background:#fff8f8;border:1px dashed var(--red);border-radius:10px;padding:0.75rem 1rem;margin-bottom:0.85rem;}
+.admin-bar-title{font-size:0.78rem;font-weight:600;color:var(--red);margin-bottom:0.6rem;}
+.add-cat-row{display:flex;gap:0.5rem;}
+.add-cat-row input{flex:1;padding:0.4rem 0.7rem;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;font-family:inherit;outline:none;}
+.add-cat-row input:focus{border-color:var(--red);}
+.category{background:var(--surface);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:0.7rem;}
+.cat-head{padding:0.65rem 0.9rem;background:#fafaf8;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.5rem;}
+.cat-icon-input{font-size:1.1rem;background:transparent;border:none;width:2.2rem;cursor:text;outline:none;font-family:inherit;}
+.cat-title-input{font-size:0.85rem;font-weight:600;flex:1;background:transparent;border:none;outline:none;font-family:inherit;color:var(--text);}
+.cat-title-input:focus{background:var(--bg);border-radius:4px;padding:0 4px;}
+.cat-count{font-size:0.72rem;color:var(--text-muted);}
+.cat-del-btn{font-size:1rem;background:none;border:none;cursor:pointer;color:var(--text-faint);padding:0 0.2rem;line-height:1;}
+.cat-del-btn:hover{color:var(--red);}
+.item{display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 0.9rem;border-top:1px solid var(--border);transition:background 0.1s;-webkit-tap-highlight-color:transparent;}
+.item.clickable{cursor:pointer;}
+.item.clickable:hover{background:#fafaf8;}
+.item.clickable:active{background:#f0f0ee;}
+.cb{width:19px;height:19px;border:2px solid #ccc;border-radius:5px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;background:white;cursor:pointer;}
+.cb.checked{background:var(--green);border-color:var(--green);}
+.cb.checked::after{content:'';width:5px;height:8px;border:2px solid white;border-top:none;border-left:none;transform:rotate(45deg) translate(-1px,-1px);display:block;}
+.item-body{flex:1;min-width:0;}
+.item-text{font-size:0.85rem;line-height:1.4;color:var(--text);}
+.item-textarea{font-size:0.85rem;line-height:1.4;color:var(--text);background:transparent;border:none;outline:none;width:100%;font-family:inherit;resize:vertical;padding:0;min-height:36px;}
+.item-textarea:focus{background:var(--bg);border-radius:4px;padding:2px 4px;}
+.done .item-text{text-decoration:line-through;color:var(--text-faint);}
+.item-meta{display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem;flex-wrap:wrap;}
+.tag{font-size:0.68rem;font-weight:500;padding:2px 6px;border-radius:99px;}
+.tag-buy{background:var(--orange-bg);color:var(--orange);}
+.tag-prep{background:var(--blue-bg);color:var(--blue);}
+.tag-ask{background:var(--red-light);color:var(--red);}
+.who-badge{font-size:0.68rem;color:var(--green);font-weight:500;}
+.claim-btn{font-size:0.68rem;padding:2px 7px;border:1px solid var(--border);border-radius:99px;background:transparent;color:var(--text-muted);cursor:pointer;font-weight:500;transition:all 0.15s;}
+.claim-btn:hover{background:var(--dark);color:white;border-color:var(--dark);}
+.item-del-btn{font-size:1rem;background:none;border:none;cursor:pointer;color:var(--text-faint);padding:0 0.1rem;flex-shrink:0;line-height:1;}
+.item-del-btn:hover{color:var(--red);}
+.tag-select{font-size:0.68rem;padding:2px 4px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-family:inherit;cursor:pointer;flex-shrink:0;margin-top:1px;}
+.add-item-row{display:flex;gap:0.5rem;padding:0.5rem 0.9rem;border-top:1px dashed var(--border);background:#fafaf8;align-items:center;}
+.add-item-row input{flex:1;padding:0.35rem 0.6rem;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;font-family:inherit;outline:none;}
+.add-item-row input:focus{border-color:var(--red);}
+.add-item-row select{padding:0.35rem 0.4rem;border:1px solid var(--border);border-radius:6px;font-size:0.78rem;background:var(--surface);font-family:inherit;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:white;border-radius:16px 16px 0 0;padding:1.5rem 1.5rem 2rem;width:100%;max-width:480px;animation:slideUp 0.2s ease;}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.modal h3{font-size:1.05rem;font-weight:600;margin-bottom:0.4rem;}
+.modal p{font-size:0.85rem;color:var(--text-muted);margin-bottom:0.9rem;line-height:1.5;}
+.modal input{width:100%;padding:0.7rem 0.9rem;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;font-family:inherit;margin-bottom:0.7rem;outline:none;transition:border 0.15s;}
+.modal input:focus{border-color:var(--red);}
+.modal-actions{display:flex;gap:0.5rem;}
+.modal-actions .btn{flex:1;justify-content:center;padding:0.6rem;font-size:0.85rem;}
+.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:200px;gap:1rem;color:var(--text-muted);font-size:0.88rem;}
+.spinner{width:28px;height:28px;border:3px solid #eee;border-top-color:var(--red);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.footer{text-align:center;padding:1rem;font-size:0.72rem;color:var(--text-faint);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <button class="admin-toggle" id="admin-toggle" onclick="toggleAdmin()">✏️ Modifica</button>
+  <div class="hero-flag">🇯🇵</div>
+  <h1>Checklist festa Cioci</h1>
+  <p>30 anni — Operazione Giappone</p>
+</div>
+
+<div class="progress-section">
+  <div class="progress-row">
+    <span class="progress-label">Avanzamento</span>
+    <span class="progress-count" id="prog-count">—</span>
+  </div>
+  <div class="bar"><div class="bar-fill" id="bar" style="width:0%"></div></div>
+  <div class="stats-row">
+    <div class="stat-pill"><strong id="s-done">—</strong>Fatte</div>
+    <div class="stat-pill"><strong id="s-buy">—</strong>Comprare</div>
+    <div class="stat-pill"><strong id="s-prep">—</strong>Preparare</div>
+    <div class="stat-pill"><strong id="s-ask">—</strong>Coordinare</div>
+  </div>
+</div>
+
+<div class="share-bar">
+  <span class="share-label">📤 Manda questo link agli amici</span>
+  <div class="share-actions">
+    <button class="btn" onclick="copyLink(this)">📋 Copia link</button>
+    <button class="btn green" onclick="whatsapp()">WhatsApp</button>
+  </div>
+</div>
+
+<div class="sync-status" id="sync-status">Connessione a Firebase...</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="setFilter('all',this)">Tutto</button>
+  <button class="filter-btn" onclick="setFilter('buy',this)">🛒 Comprare</button>
+  <button class="filter-btn" onclick="setFilter('prep',this)">🛠 Preparare</button>
+  <button class="filter-btn" onclick="setFilter('ask',this)">👥 Coordinare</button>
+  <button class="filter-btn" onclick="setFilter('done',this)">✅ Completate</button>
+</div>
+
+<main id="main">
+  <div class="loading-screen"><div class="spinner"></div><span>Caricamento...</span></div>
+</main>
+
+<div class="footer">Sincronizzazione Firebase in tempo reale</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3>Come ti chiami?</h3>
+    <p>Inserisci il tuo nome così tutti sanno chi compra o prepara cosa.</p>
+    <input type="text" id="name-input" placeholder="Es. Marco, Giulia..." maxlength="30" autocomplete="off"/>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Annulla</button>
+      <button class="btn red" onclick="confirmName()">Conferma</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDGvaHMwseBslu9C5TYhtCb11ZxDiYsn2M",
+  authDomain: "cranes-projects.firebaseapp.com",
+  projectId: "cranes-projects",
+  storageBucket: "cranes-projects.firebasestorage.app",
+  messagingSenderId: "980158998274",
+  appId: "1:980158998274:web:40c6fc775118df8355841b"
+});
+const db = getFirestore(app);
+const REF = doc(db, "festa-cioci", "checklist");
+
+const DEFAULT = [
+  {id:'costume',icon:'👘',title:'Costume & abbigliamento',items:[
+    {text:'Kimono completo uomo (taglia M/L)',tag:'buy',done:false,who:''},
+    {text:'Sandali giapponesi (Zori o Geta)',tag:'buy',done:false,who:''},
+    {text:'Calzini bianchi tabi',tag:'buy',done:false,who:''},
+    {text:'Obi (cintura del kimono)',tag:'buy',done:false,who:''},
+  ]},
+  {id:'deco',icon:'🏮',title:'Decorazioni tema Giappone',items:[
+    {text:'Lanterne di carta rosse e bianche',tag:'buy',done:false,who:''},
+    {text:'Bandierine giapponesi / striscione kanji',tag:'buy',done:false,who:''},
+    {text:'Rami sakura finti decorativi',tag:'buy',done:false,who:''},
+    {text:'Ombrellini di carta giapponesi colorati',tag:'buy',done:false,who:''},
+    {text:'Ventagli di carta a tema',tag:'buy',done:false,who:''},
+    {text:'Palloncini rossi e bianchi',tag:'buy',done:false,who:''},
+    {text:'Striscione "Buon Compleanno Cioci" da stampare',tag:'prep',done:false,who:''},
+  ]},
+  {id:'aeroporto',icon:'✈️',title:'Allestimento aeroporto',items:[
+    {text:'Cartello "Aeroporto di Udine — Gate 30" da stampare',tag:'prep',done:false,who:''},
+    {text:'Nastro per delimitare la zona check-in',tag:'buy',done:false,who:''},
+    {text:'Pettorina/cartellino "Agente" per le guardie',tag:'buy',done:false,who:''},
+    {text:'Timbro finto per passaporto',tag:'buy',done:false,who:''},
+    {text:'Ventilatore per simulare il vento',tag:'buy',done:false,who:''},
+  ]},
+  {id:'valigia',icon:'🧳',title:'Valigia di Cioci',items:[
+    {text:'Palloncini d\'acqua (riempire il giorno della festa)',tag:'buy',done:false,who:''},
+    {text:'Teli / sacchetti impermeabili per il pavimento',tag:'buy',done:false,who:''},
+    {text:'Oggetti nascosti nella valigia',tag:'prep',done:false,who:''},
+  ]},
+  {id:'documenti',icon:'📄',title:'Documenti falsi da stampare',items:[
+    {text:'Passaporto giapponese falso con foto di Cioci',tag:'prep',done:false,who:''},
+    {text:'Biglietto aereo Udine → Tokyo',tag:'prep',done:false,who:''},
+    {text:'Visto turistico compilato a mano',tag:'prep',done:false,who:''},
+    {text:'Carta d\'imbarco (posto 30B)',tag:'prep',done:false,who:''},
+    {text:'Dichiarazione doganale inventata',tag:'prep',done:false,who:''},
+    {text:'Polizza assicurativa fake',tag:'prep',done:false,who:''},
+  ]},
+  {id:'audio',icon:'🎵',title:'Audio & effetti speciali',items:[
+    {text:'Playlist annunci aeroporto (YouTube: airport ambience)',tag:'prep',done:false,who:''},
+    {text:'Effetti sonori: decollo, turbolenza, tuono, atterraggio',tag:'prep',done:false,who:''},
+    {text:'Playlist musica giapponese per la festa',tag:'prep',done:false,who:''},
+    {text:'Casse bluetooth di buona qualità',tag:'prep',done:false,who:''},
+  ]},
+  {id:'giochi',icon:'🥢',title:'Sfide con le bacchette',items:[
+    {text:'Bacchette giapponesi — almeno 10 paia',tag:'buy',done:false,who:''},
+    {text:'Palline o fagioli per sfide di precisione',tag:'buy',done:false,who:''},
+    {text:'Caramelle giapponesi come premi (Hi-Chew, Pocky…)',tag:'buy',done:false,who:''},
+    {text:'Ciotoline o piatti per le sfide',tag:'buy',done:false,who:''},
+    {text:'Cronometro / timer per le gare',tag:'prep',done:false,who:''},
+  ]},
+  {id:'oggetti',icon:'🗾',title:'Oggetti & gadget a tema Giappone',items:[
+    {text:'Caramelle giapponesi miste (mochi, ramune, pocky…)',tag:'buy',done:false,who:''},
+    {text:'Tazze o ciotole in stile giapponese',tag:'buy',done:false,who:''},
+    {text:'Figurine o gadget anime decorativi',tag:'buy',done:false,who:''},
+    {text:'Sake o tè verde giapponese per i brindisi',tag:'buy',done:false,who:''},
+    {text:'Foto stampate delle destinazioni del viaggio',tag:'prep',done:false,who:''},
+  ]},
+  {id:'regalo',icon:'🎁',title:'Il regalo finale',items:[
+    {text:'Raccogliere la quota da tutti i 30 invitati',tag:'ask',done:false,who:''},
+    {text:'Decidere i dettagli del viaggio per il biglietto',tag:'ask',done:false,who:''},
+    {text:'Scrivere il biglietto a mano',tag:'prep',done:false,who:''},
+    {text:'Busta/scatolina con soldi + biglietto',tag:'buy',done:false,who:''},
+    {text:'Carta da regalo tema Giappone + nastro rosso',tag:'buy',done:false,who:''},
+    {text:'Nascondere il regalo nella valigia prima della festa',tag:'prep',done:false,who:''},
+  ]},
+  {id:'ruoli',icon:'👥',title:'Coordinamento persone',items:[
+    {text:'Assegnare Presentatore / MC della serata',tag:'ask',done:false,who:''},
+    {text:'Assegnare 2 Agenti Immigrazione al check-in',tag:'ask',done:false,who:''},
+    {text:'Assegnare Ispettore Sicurezza (apre la valigia)',tag:'ask',done:false,who:''},
+    {text:'Assegnare Giudice del Visto (interrogatorio)',tag:'ask',done:false,who:''},
+    {text:'Assegnare Addetto Turbolenza (lancia palloncini)',tag:'ask',done:false,who:''},
+    {text:'Assegnare DJ / Tecnico Audio',tag:'ask',done:false,who:''},
+    {text:'Assegnare Fotografo ufficiale',tag:'ask',done:false,who:''},
+    {text:'Avvisare tutti i 30 invitati: mantenere il segreto!',tag:'ask',done:false,who:''},
+  ]},
+];
+
+let cats = [];
+let userName = localStorage.getItem('cioci_name') || '';
+let filter = 'all';
+let pendingKey = null;
+let adminMode = false;
+let saveTimer = null;
+
+const uid = () => Math.random().toString(36).slice(2,8);
+const setSync = msg => document.getElementById('sync-status').textContent = msg;
+
+// Firebase listener
+onSnapshot(REF, snap => {
+  if (snap.exists() && snap.data().categories) {
+    cats = snap.data().categories;
+  } else {
+    cats = JSON.parse(JSON.stringify(DEFAULT));
+    saveNow();
+  }
+  render();
+  setSync('✅ Connesso — modifiche in tempo reale');
+}, () => {
+  setSync('⚠️ Errore connessione Firebase');
+  cats = JSON.parse(JSON.stringify(DEFAULT));
+  render();
+});
+
+function scheduleSave() {
+  setSync('💾 Salvataggio...');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveNow, 800);
+}
+async function saveNow() {
+  try { await setDoc(REF, { categories: cats }); setSync('✅ Salvato — visibile a tutti'); }
+  catch(e) { setSync('⚠️ Errore salvataggio'); }
+}
+
+// Admin
+window.toggleAdmin = () => {
+  adminMode = !adminMode;
+  const btn = document.getElementById('admin-toggle');
+  btn.textContent = adminMode ? '✅ Fine modifica' : '✏️ Modifica';
+  btn.classList.toggle('active', adminMode);
+  render();
+};
+
+// Checklist actions
+window.toggleItem = (catId, idx) => {
+  if (adminMode) return;
+  const cat = cats.find(c => c.id === catId);
+  const item = cat && cat.items[idx];
+  if (!item) return;
+  if (!item.done) {
+    if (!userName) { pendingKey = catId + '::' + idx; openModal(); return; }
+    item.done = true; item.who = userName;
+  } else { item.done = false; item.who = ''; }
+  render(); scheduleSave();
+};
+window.claimItem = (catId, idx, e) => {
+  e.stopPropagation();
+  if (!userName) { pendingKey = '__claim__' + catId + '::' + idx; openModal(); return; }
+  const cat = cats.find(c => c.id === catId);
+  if (cat && !cat.items[idx].who) { cat.items[idx].who = userName; render(); scheduleSave(); }
+};
+
+// Admin actions
+window.addCategory = () => {
+  const inp = document.getElementById('new-cat-input');
+  const name = inp.value.trim(); if (!name) return;
+  cats.push({ id: uid(), icon: '📝', title: name, items: [] });
+  inp.value = ''; render(); scheduleSave();
+};
+window.deleteCategory = catId => {
+  if (!confirm('Eliminare questa categoria e tutte le sue voci?')) return;
+  cats = cats.filter(c => c.id !== catId); render(); scheduleSave();
+};
+window.updateCatTitle = (catId, val) => { const c = cats.find(c=>c.id===catId); if(c){c.title=val;scheduleSave();} };
+window.updateCatIcon  = (catId, val) => { const c = cats.find(c=>c.id===catId); if(c){c.icon=val;scheduleSave();} };
+window.addItem = catId => {
+  const inp = document.getElementById('ni-'+catId);
+  const sel = document.getElementById('nt-'+catId);
+  const text = inp.value.trim(); if (!text) return;
+  const cat = cats.find(c=>c.id===catId);
+  if (cat) { cat.items.push({text, tag:sel.value, done:false, who:''}); inp.value=''; render(); scheduleSave(); }
+};
+window.deleteItem = (catId, idx) => {
+  const cat = cats.find(c=>c.id===catId);
+  if (cat) { cat.items.splice(idx,1); render(); scheduleSave(); }
+};
+window.updateItemText = (catId, idx, val) => { const c=cats.find(c=>c.id===catId); if(c){c.items[idx].text=val;scheduleSave();} };
+window.updateItemTag  = (catId, idx, val) => { const c=cats.find(c=>c.id===catId); if(c){c.items[idx].tag=val;render();scheduleSave();} };
+window.itemKey = (e, catId) => { if(e.key==='Enter') addItem(catId); };
+
+// Modal
+window.openModal = () => { document.getElementById('overlay').classList.add('open'); setTimeout(()=>document.getElementById('name-input').focus(),100); };
+window.closeModal = () => { document.getElementById('overlay').classList.remove('open'); pendingKey=null; };
+window.confirmName = () => {
+  const v = document.getElementById('name-input').value.trim(); if (!v) return;
+  userName = v; localStorage.setItem('cioci_name', v); closeModal();
+  if (pendingKey) {
+    if (pendingKey.startsWith('__claim__')) {
+      const [catId,idx] = pendingKey.replace('__claim__','').split('::');
+      const cat = cats.find(c=>c.id===catId);
+      if (cat) { cat.items[+idx].who=userName; render(); scheduleSave(); }
+    } else { const [catId,idx]=pendingKey.split('::'); toggleItem(catId,+idx); }
+    pendingKey=null;
+  }
+};
+document.getElementById('name-input').addEventListener('keydown', e=>{ if(e.key==='Enter') confirmName(); });
+document.getElementById('overlay').addEventListener('click', e=>{ if(e.target===e.currentTarget) closeModal(); });
+
+// Share
+window.copyLink = btn => {
+  navigator.clipboard.writeText(location.href).then(()=>{ const o=btn.textContent; btn.textContent='✅ Copiato!'; setTimeout(()=>{btn.textContent=o;},2000); });
+};
+window.whatsapp = () => {
+  window.open('https://wa.me/?text='+encodeURIComponent('🇯🇵 Checklist festa Cioci — 30 anni!\nSpunta quello che compri o prepari tu:\n'+location.href),'_blank');
+};
+window.setFilter = (f,btn) => {
+  filter=f; document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render();
+};
+
+// Render
+const TAGS = {buy:'🛒 comprare',prep:'🛠 preparare',ask:'👥 coordinare'};
+function render() {
+  const all = cats.flatMap(c=>c.items);
+  const total = all.length, done = all.filter(i=>i.done).length;
+  document.getElementById('prog-count').textContent = done+' / '+total;
+  document.getElementById('bar').style.width = total ? Math.round(done/total*100)+'%' : '0%';
+  document.getElementById('s-done').textContent = done;
+  document.getElementById('s-buy').textContent  = all.filter(i=>i.tag==='buy').length;
+  document.getElementById('s-prep').textContent = all.filter(i=>i.tag==='prep').length;
+  document.getElementById('s-ask').textContent  = all.filter(i=>i.tag==='ask').length;
+
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  if (adminMode) {
+    const bar = document.createElement('div');
+    bar.className = 'admin-bar';
+    bar.innerHTML = `<div class="admin-bar-title">✏️ Modalità modifica — le modifiche sono visibili a tutti in tempo reale</div>
+      <div class="add-cat-row">
+        <input id="new-cat-input" placeholder="Nome nuova categoria..." onkeydown="if(event.key==='Enter')addCategory()"/>
+        <button class="btn red small" onclick="addCategory()">+ Categoria</button>
+      </div>`;
+    main.appendChild(bar);
+  }
+
+  cats.forEach(cat => {
+    let items = cat.items;
+    if (!adminMode) {
+      if (filter==='done') items=items.filter(i=>i.done);
+      else if (filter!=='all') items=items.filter(i=>i.tag===filter);
+      if (!items.length) return;
+    }
+    const catDone = cat.items.filter(i=>i.done).length;
+    const wrap = document.createElement('div'); wrap.className='category';
+
+    // Header
+    const head = document.createElement('div'); head.className='cat-head';
+    if (adminMode) {
+      head.innerHTML=`<input class="cat-icon-input" value="${cat.icon}" maxlength="2" oninput="updateCatIcon('${cat.id}',this.value)" title="Cambia emoji"/>
+        <input class="cat-title-input" value="${cat.title.replace(/"/g,'&quot;')}" oninput="updateCatTitle('${cat.id}',this.value)" placeholder="Nome categoria"/>
+        <button class="cat-del-btn" onclick="deleteCategory('${cat.id}')" title="Elimina">🗑</button>`;
+    } else {
+      head.innerHTML=`<span class="cat-icon">${cat.icon}</span><span class="cat-title">${cat.title}</span><span class="cat-count">${catDone}/${cat.items.length}</span>`;
+    }
+    wrap.appendChild(head);
+
+    // Items
+    items.forEach((item, vi) => {
+      const oi = adminMode ? vi : cat.items.indexOf(item);
+      const row = document.createElement('div');
+      row.className = 'item' + (item.done?' done':'') + (!adminMode?' clickable':'');
+      if (!adminMode) row.onclick = ()=>toggleItem(cat.id, oi);
+
+      if (adminMode) {
+        row.innerHTML=`<select class="tag-select" onchange="updateItemTag('${cat.id}',${oi},this.value)">
+            <option value="buy" ${item.tag==='buy'?'selected':''}>🛒</option>
+            <option value="prep" ${item.tag==='prep'?'selected':''}>🛠</option>
+            <option value="ask" ${item.tag==='ask'?'selected':''}>👥</option>
+          </select>
+          <div class="item-body">
+            <textarea class="item-textarea" oninput="updateItemText('${cat.id}',${oi},this.value)">${item.text}</textarea>
+          </div>
+          <button class="item-del-btn" onclick="deleteItem('${cat.id}',${oi})">🗑</button>`;
+      } else {
+        const who = item.who
+          ? `<span class="who-badge">✓ ${item.who}</span>`
+          : `<button class="claim-btn" onclick="claimItem('${cat.id}',${oi},event)">Ci penso io</button>`;
+        row.innerHTML=`<div class="cb${item.done?' checked':''}" onclick="event.stopPropagation();toggleItem('${cat.id}',${oi})"></div>
+          <div class="item-body">
+            <div class="item-text">${item.text}</div>
+            <div class="item-meta"><span class="tag tag-${item.tag}">${TAGS[item.tag]}</span>${who}</div>
+          </div>`;
+      }
+      wrap.appendChild(row);
+    });
+
+    // Add item row (admin)
+    if (adminMode) {
+      const add = document.createElement('div'); add.className='add-item-row';
+      add.innerHTML=`<input id="ni-${cat.id}" placeholder="Nuova voce..." onkeydown="itemKey(event,'${cat.id}')"/>
+        <select id="nt-${cat.id}">
+          <option value="buy">🛒</option><option value="prep">🛠</option><option value="ask">👥</option>
+        </select>
+        <button class="btn red small" onclick="addItem('${cat.id}')">+</button>`;
+      wrap.appendChild(add);
+    }
+    main.appendChild(wrap);
+  });
+}
+</script>
+</body>
+</html>
